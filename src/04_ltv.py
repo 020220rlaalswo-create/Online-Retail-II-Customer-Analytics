@@ -1,4 +1,9 @@
-"""04. 12-month LTV: linear projection, binary activity filter, exponential recency decay."""
+"""04. Heuristic 12-month annualized revenue projection, NOT validated future LTV.
+
+The first-to-last purchase observation window can inflate short-tenure customers.
+Compare against temporal holdout results from 06_ltv_backtest.py before using
+these values for decisions. The 180-day decay is an illustrative assumption.
+"""
 from pathlib import Path
 import numpy as np
 import pandas as pd
