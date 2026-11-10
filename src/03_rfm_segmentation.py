@@ -15,10 +15,10 @@ rfm = df.groupby('Customer ID').agg({
     'InvoiceDate': lambda x: (snapshot_date - x.max()).days,   # Recency
     'Invoice': 'nunique',                                        # Frequency
     'TotalPrice': 'sum',                                         # Monetary
-}).reset_index()
+}).reset_index().sort_values('Customer ID').reset_index(drop=True)
 rfm.columns = ['Customer ID', 'Recency', 'Frequency', 'Monetary']
 
-# Recency: lower is better -> reversed labels. Frequency uses rank() because of many ties (1 purchase).
+# Recency: lower is better -> reversed labels. Frequency uses rank(method='first') on customer-ID-sorted rows, so ties are reproducible.
 rfm['R_Score'] = pd.qcut(rfm['Recency'], 5, labels=[5, 4, 3, 2, 1]).astype(int)
 rfm['F_Score'] = pd.qcut(rfm['Frequency'].rank(method='first'), 5, labels=[1, 2, 3, 4, 5]).astype(int)
 rfm['M_Score'] = pd.qcut(rfm['Monetary'], 5, labels=[1, 2, 3, 4, 5]).astype(int)
